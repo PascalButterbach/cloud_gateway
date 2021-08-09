@@ -1,0 +1,25 @@
+server:
+  port: 9000
+
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+          - Path=/user/**
+        - id: IMAGE-SERVICE
+          uri: lb://IMAGE-SERVICE
+          predicates:
+            - Path=/image/**
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defeaultZone: http://localhost:8761/eureka
