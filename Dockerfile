@@ -7,8 +7,8 @@
 #COPY . /app/
 #RUN mvn -f pom.xml clean package -DskipTests
 
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM adoptopenjdk/openjdk11:alpine
 # Copy the packaged jar app file to a smaller JRE base image
-COPY --from=compile "/app/target/cloud_gateway.jar" /usr/share/
+COPY "/app/target/cloud_gateway.jar" /usr/share/
 EXPOSE 9000
 ENTRYPOINT ["java", "-jar", "/usr/share/cloud_gateway.jar"]
