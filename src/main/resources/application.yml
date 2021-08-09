@@ -16,6 +16,8 @@ spring:
           uri: lb://IMAGE-SERVICE
           predicates:
             - Path=/image/**
+          filters:
+            - AuthFilter
 
 eureka:
   client:
