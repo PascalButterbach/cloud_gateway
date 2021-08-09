@@ -1,4 +1,4 @@
-FROM adoptopenjdk:11-jre-hotspot
+FROM openjdk:17-jdk-alpine3.14
 WORKDIR /app
 
 COPY .mvn/ .mvn
