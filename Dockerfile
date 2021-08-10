@@ -1,4 +1,4 @@
-FROM openjdk11:jre
+FROM openjdk:17-jdk-alpine3.14
 WORKDIR /app
 
 COPY .mvn/ .mvn
