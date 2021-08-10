@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:ubi
+FROM adoptopenjdk/openjdk11:alpine-slim
 WORKDIR /app
 
 COPY .mvn/ .mvn
