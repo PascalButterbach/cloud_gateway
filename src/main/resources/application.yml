@@ -29,4 +29,4 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defeaultZone: http://172.26.208.1:8761/eureka
+      defeaultZone: http://192.168.0.20:8761/eureka
