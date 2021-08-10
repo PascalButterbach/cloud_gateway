@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine3.14
+FROM adoptopenjdk/openjdk11:ubi
 WORKDIR /app
 
 COPY .mvn/ .mvn
