@@ -1,7 +1,6 @@
 package de.chronies.cloud.gateway.config;
 
 import de.chronies.cloud.gateway.dto.UserDto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
