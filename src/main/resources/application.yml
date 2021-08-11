@@ -11,13 +11,13 @@ spring:
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
-          - Path=/user/**
+            - Path=/user/**
         - id: IMAGE-SERVICE
           uri: lb://IMAGE-SERVICE
           predicates:
             - Path=/image/**
           filters:
-            - AuthFilter
+            - name: AuthFilter
 
 eureka:
   client:

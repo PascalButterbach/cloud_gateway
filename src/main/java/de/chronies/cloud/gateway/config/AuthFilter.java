@@ -19,9 +19,9 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     }
 
     @Override
-    public GatewayFilter apply(Config config){
+    public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            if(!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
+            if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 throw new RuntimeException("Missing authentication information");
             }
 
@@ -29,14 +29,15 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             String[] parts = authHeader.split(" ");
 
-            if(parts.length != 2 ||  !"Bearer".equals(parts[0])){
+            if (parts.length != 2 || !"Bearer".equals(parts[0])) {
                 throw new RuntimeException("Incorrect authentication structure");
             }
 
             return webClientBuilder.build()
                     .post()
                     .uri("http://USER-SERVICE/user/validateToken?token=" + parts[1])
-                    .retrieve().bodyToMono(UserDto.class)
+                    .retrieve()
+                    .bodyToMono(UserDto.class)
                     .map(userDto -> {
                         exchange.getRequest()
                                 .mutate()
