@@ -1,10 +1,7 @@
 FROM hypriot/rpi-java
-
-ADD build/libs/cloud-gateway.jar /opt/cloud-gateway.jar
-
-EXPOSE 8999
-
-ENTRYPOINT ["java", "-jar", "/opt/cloud-gateway.jar"]
+ADD ./target/cloud-gateway.jar cloud-gateway.jar
+COPY api_key /tmp/api_key
+ENTRYPOINT ["java", "-jar", "cloud-gateway.jar"]
 
 #FROM adoptopenjdk/openjdk11:alpine-slim
 #WORKDIR /app
