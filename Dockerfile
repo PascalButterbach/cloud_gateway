@@ -1,9 +1,5 @@
 FROM hypriot/rpi-java:latest as packager
 
-ENV JAVA_MINIMAL=/opt/jre
-ENV PATH="$PATH:$JAVA_MINIMAL/bin"
-
-COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 COPY "build/libs/opt/cloud-gateway.jar" "/opt/cloud-gateway.jar"
 
 EXPOSE 8999
