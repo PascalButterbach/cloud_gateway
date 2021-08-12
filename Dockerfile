@@ -1,4 +1,4 @@
-FROM adoptopenjdk:11-jdk-hotspot
+FROM adoptopenjdk:11-jdk
 
 ARG MAVEN_VERSION=3.8.1
 ARG USER_HOME_DIR="/root"
