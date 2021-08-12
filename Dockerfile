@@ -1,4 +1,4 @@
-FROM hypriot/rpi-java
+FROM adoptopenjdk/openjdk11
 
 ADD SpringBootREST-0.0.1-SNAPSHOT.jar /opt/SpringBootREST-0.0.1-SNAPSHOT.jar
 
