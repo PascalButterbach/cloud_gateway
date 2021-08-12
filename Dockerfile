@@ -1,4 +1,4 @@
-FROM hypriot/rpi-java:latest as packager
+FROM hypriot/rpi-java:latest
 
 COPY "build/libs/opt/cloud-gateway.jar" "/opt/cloud-gateway.jar"
 
