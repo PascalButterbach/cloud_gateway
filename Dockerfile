@@ -1,4 +1,4 @@
-FROM hypriot/rpi-java
+FROM arm32v7/adoptopenjdk:11-jre-hotspot
 
 RUN mkdir -p /app
 #Set the current working directory inside the image
