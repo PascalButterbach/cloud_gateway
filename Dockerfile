@@ -1,19 +1,14 @@
-FROM arm32v7/adoptopenjdk:11-jdk-hotspot
+FROM adoptopenjdk/openjdk11:alpine-slim
+WORKDIR /app
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline
 
 COPY src ./src
-ENTRYPOINT ["java","-jar", "/app.jar"]
 
-#FROM hypriot/rpi-java
-#WORKDIR /app
-#
-#COPY .mvn/ .mvn
-#COPY mvnw pom.xml ./
-#
-#RUN chmod +x ./mvnw
-#RUN ./mvnw dependency:go-offline
-#
-#COPY src ./src
-#
-#EXPOSE 8999
-#
-#CMD ["./mvnw", "spring-boot:run"]
+EXPOSE 9000
+
+CMD ["./mvnw", "spring-boot:run"]
