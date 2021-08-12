@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:11 as packager
+FROM hypriot/rpi-java:latest as packager
 
 RUN { \
         java --version ; \
