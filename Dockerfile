@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:armv7l-ubuntu-jdk11u-nightly-slim
+FROM arm32v7/adoptopenjdk:11-jre-hotspot
 WORKDIR /app
 
 COPY .mvn/ .mvn
