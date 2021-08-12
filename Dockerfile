@@ -1,14 +1,23 @@
-FROM adoptopenjdk/openjdk11:alpine-slim
-WORKDIR /app
+FROM hypriot/rpi-java
 
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
+ADD SpringBootREST-0.0.1-SNAPSHOT.jar /opt/SpringBootREST-0.0.1-SNAPSHOT.jar
 
-RUN chmod +x ./mvnw
-RUN ./mvnw dependency:go-offline
+EXPOSE 8999
 
-COPY src ./src
+ENTRYPOINT ["java", "-jar", "/opt/SpringBootREST-0.0.1-SNAPSHOT.jar"]
 
-EXPOSE 9000
 
-CMD ["./mvnw", "spring-boot:run"]
+#FROM adoptopenjdk/openjdk11:alpine-slim
+#WORKDIR /app
+#
+#COPY .mvn/ .mvn
+#COPY mvnw pom.xml ./
+#
+#RUN chmod +x ./mvnw
+#RUN ./mvnw dependency:go-offline
+#
+#COPY src ./src
+#
+#EXPOSE 9000
+#
+#CMD ["./mvnw", "spring-boot:run"]
