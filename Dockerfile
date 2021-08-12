@@ -1,9 +1,10 @@
-FROM arm32v7/adoptopenjdk:11-jdk-hotspot
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} cloud-gateway.jar
-EXPOSE 8999
-ENTRYPOINT ["java","-jar","/cloud-gateway.jar"]
+FROM hypriot/rpi-java
 
+ADD cloud-gateway /opt/cloud-gateway
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/opt/cloud-gateway.jar"]
 #FROM arm32v7/adoptopenjdk:11-jdk-hotspot
 #WORKDIR /app
 #
