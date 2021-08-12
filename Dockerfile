@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-slim
+FROM adoptopenjdk/openjdk11:armv7l-ubuntu-jdk11u-nightly-slim
 WORKDIR /app
 
 COPY .mvn/ .mvn
@@ -9,6 +9,6 @@ RUN ./mvnw dependency:go-offline
 
 COPY src ./src
 
-EXPOSE 9000
+EXPOSE 8999
 
 CMD ["./mvnw", "spring-boot:run"]
