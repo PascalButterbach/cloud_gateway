@@ -1,4 +1,4 @@
-FROM arm32v7/adoptopenjdk:11-jre-hotspot
+FROM arm32v7/adoptopenjdk:11-jdk-hotspot
 WORKDIR /app
 
 COPY .mvn/ .mvn
