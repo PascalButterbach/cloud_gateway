@@ -4,15 +4,15 @@ RUN mkdir -p /app
 #Set the current working directory inside the image
 WORKDIR /app
 
-COPY .mvn .mvn
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-COPY pom.xml .
-
+RUN chmod +x ./mvnw
 RUN ./mvnw dependency:go-offline
 
-COPY src src
+COPY src ./src
 
-RUN ./mvnw package -DskipTests
+CMD ["./mvnw", "spring-boot:run"]
 
 
 #FROM hypriot/rpi-java
