@@ -1,4 +1,4 @@
-FROM arm32v7/adoptopenjdk:11-jre-hotspot
+FROM arm32v7/adoptopenjdk:jdk
 
 RUN mkdir -p /app
 #Set the current working directory inside the image
