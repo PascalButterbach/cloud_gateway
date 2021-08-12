@@ -1,5 +1,9 @@
 FROM hypriot/rpi-java
 
+RUN mkdir -p /app
+#Set the current working directory inside the image
+WORKDIR /app
+
 COPY .mvn .mvn
 
 COPY pom.xml .
