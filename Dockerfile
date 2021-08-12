@@ -1,10 +1,18 @@
 FROM adoptopenjdk/openjdk15
 
-ADD SpringBootREST-0.0.1-SNAPSHOT.jar /opt/SpringBootREST-0.0.1-SNAPSHOT.jar
+WORKDIR /app
 
-EXPOSE 8999
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-ENTRYPOINT ["java", "-jar", "/opt/SpringBootREST-0.0.1-SNAPSHOT.jar"]
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+
+EXPOSE 9000
+
+CMD ["./mvnw", "spring-boot:run"]
 
 
 #FROM adoptopenjdk/openjdk11:alpine-slim
