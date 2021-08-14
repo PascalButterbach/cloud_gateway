@@ -20,11 +20,11 @@ spring:
             - name: AuthFilter
 
 eureka:
-  instance:
-    prefer-ip-address: true
-    hostname: 192.168.0.69
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defeaultZone: http://192.168.0.20:8761/eureka
+      defaultZone: ${eureka_url:http://192.168.0.69:8761/eureka}
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    hostname: ${eureka_host:localhost}
