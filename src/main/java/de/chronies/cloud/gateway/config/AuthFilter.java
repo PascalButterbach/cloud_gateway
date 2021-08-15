@@ -1,5 +1,7 @@
 package de.chronies.cloud.gateway.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.chronies.cloud.gateway.dto.ApiExceptionDto;
 import de.chronies.cloud.gateway.dto.UserDto;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -12,6 +14,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
@@ -22,18 +29,18 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         this.webClientBuilder = webClientBuilder;
     }
 
-
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            //TEST
-            var buffer = exchange.getResponse().bufferFactory();
 
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                //TEST
-                return writeResponse(exchange.getResponse(), "Missing authentication information".getBytes());
-                //return exchange.getResponse().writeWith(Flux.just(buffer.wrap("Missing authentication information".getBytes())));
-                //throw new RuntimeException("Missing authentication information");
+                return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
+                        .message("Missing authentication information")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .time(Instant.now())
+                        .path(exchange.getRequest().getPath().toString())
+                        .build()
+                        .getJsonAsBytes());
             }
 
             String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
@@ -41,10 +48,13 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             String[] parts = authHeader.split(" ");
 
             if (parts.length != 2 || !"Bearer".equals(parts[0])) {
-                //TEST
-                return writeResponse(exchange.getResponse(), "Incorrect authentication structure".getBytes());
-                //return exchange.getResponse().writeWith(Flux.just(buffer.wrap("Incorrect authentication structure".getBytes())));
-                //throw new RuntimeException("Incorrect authentication structure");
+                return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
+                        .message("Incorrect authentication structure")
+                        .status(HttpStatus.BAD_REQUEST)
+                        .time(Instant.now())
+                        .path(exchange.getRequest().getPath().toString())
+                        .build()
+                        .getJsonAsBytes());
             }
 
             return webClientBuilder.build()
@@ -61,51 +71,19 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         };
     }
 
-    private Mono<Void> writeResponse(ServerHttpResponse response, byte[] bytes){
+    private Mono<Void> writeResponse(ServerHttpResponse response, byte[] bytes) {
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+
+        response.getHeaders().add("Date", DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
+                .withLocale(Locale.US)
+                .withZone(ZoneId.of("GMT"))
+                .format(Instant.now()));
 
         DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
 
         return response.writeWith(Flux.just(dataBuffer));
     }
-
-
-    /*@Override
-    public GatewayFilter apply(Config config) {
-        return (exchange, chain) -> {
-            //TEST
-            var buffer = exchange.getResponse().bufferFactory();
-
-            if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                //TEST
-                return exchange.getResponse().writeWith(Flux.just(buffer.wrap("Missing authentication information".getBytes())));
-                //throw new RuntimeException("Missing authentication information");
-            }
-
-            String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
-
-            String[] parts = authHeader.split(" ");
-
-            if (parts.length != 2 || !"Bearer".equals(parts[0])) {
-                //TEST
-                return exchange.getResponse().writeWith(Flux.just(buffer.wrap("Incorrect authentication structure".getBytes())));
-                //throw new RuntimeException("Incorrect authentication structure");
-            }
-
-            return webClientBuilder.build()
-                    .post()
-                    .uri("http://USER-SERVICE/user/validateToken?token=" + parts[1])
-                    .retrieve()
-                    .bodyToMono(UserDto.class)
-                    .map(userDto -> {
-                        exchange.getRequest()
-                                .mutate()
-                                .header("X-auth-user-id", String.valueOf(userDto.getId()));
-                        return exchange;
-                    }).flatMap(chain::filter);
-        };
-    }*/
 
     public static class Config {
 
