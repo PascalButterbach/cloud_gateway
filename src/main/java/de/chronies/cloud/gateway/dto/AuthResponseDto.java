@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public class AuthResponseDto {
+
     private String message;
     private HttpStatus status;
     private String time;

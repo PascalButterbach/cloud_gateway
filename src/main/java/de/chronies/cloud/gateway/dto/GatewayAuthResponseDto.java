@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserDto {
+public class GatewayAuthResponseDto {
 
-    private long id;
-    private String login;
-    private String token;
+    private int user_id;
 
 }
