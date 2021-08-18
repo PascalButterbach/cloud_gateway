@@ -7,10 +7,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: USER-SERVICE
+        - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/**
+            - Path=/user/signIn, /token/validateToken, /token/refreshToken
         - id: IMAGE-SERVICE
           uri: lb://IMAGE-SERVICE
           predicates:
