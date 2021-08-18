@@ -1,7 +1,7 @@
 package de.chronies.cloud.gateway.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.chronies.cloud.gateway.dto.ApiExceptionDto;
+import de.chronies.cloud.gateway.dto.AuthResponseDto;
 import de.chronies.cloud.gateway.dto.UserDto;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -60,6 +60,30 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             return webClientBuilder.build()
                     .post()
                     .uri("http://USER-SERVICE/user/validateToken?token=" + parts[1])
+                    .exchangeToMono(clientResponse -> {
+                        if (clientResponse.statusCode().isError()) {
+                            return clientResponse.bodyToMono(AuthResponseDto.class);
+                        }
+                        return clientResponse.bodyToMono(UserDto.class);
+                    }).flatMap(dto -> {
+                        if (dto.getClass() != UserDto.class) {
+                            AuthResponseDto authResponseDto = (AuthResponseDto) dto;
+                            return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
+                                    .message(authResponseDto.getMessage())
+                                    .status(authResponseDto.getStatus())
+                                    .time(Instant.now())
+                                    .path(authResponseDto.getPath())
+                                    .build()
+                                    .getJsonAsBytes());
+                        }
+                        return chain.filter(exchange);
+                    });
+
+
+/*
+            return webClientBuilder.build()
+                    .post()
+                    .uri("http://USER-SERVICE/user/validateToken?token=" + parts[1])
                     .retrieve()
                     .bodyToMono(UserDto.class)
                     .map(userDto -> {
@@ -68,6 +92,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                                 .header("X-auth-user-id", String.valueOf(userDto.getId()));
                         return exchange;
                     }).flatMap(chain::filter);
+*/
+
         };
     }
 
