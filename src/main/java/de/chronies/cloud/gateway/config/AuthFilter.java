@@ -60,12 +60,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         .getJsonAsBytes());
             }
 
-            String body = "{\n" +
-                    "\"token\":\"" + parts[1] + "\"" +
-                    "}";
-
- //           String body = "{\"token\":\"" + parts[1] + "\"}";
-            System.out.println(body);
+            String body = "{\"token\":\"" + parts[1] + "\"}";
 
             return webClientBuilder.build()
                     .post()
