@@ -60,13 +60,11 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         .getJsonAsBytes());
             }
 
-            String body = "{\n" +
-                          "\"token\":\"" + parts[1] + "\"" +
-                          "}";
+            String body = "{\"token\":\"" + parts[1] + "\"}";
 
             return webClientBuilder.build()
                     .post()
-                    .uri("http://USER-SERVICE/user/validateToken")
+                    .uri("http://USER-SERVICE/token/validateToken")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(body))
                     .exchangeToMono(clientResponse -> {
