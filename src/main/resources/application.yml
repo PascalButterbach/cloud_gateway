@@ -17,7 +17,5 @@ spring:
             - Path=/image/**
           filters:
             - name: AuthFilter
-#      discovery:
-#        locator:
-#          enabled: true
+
 
