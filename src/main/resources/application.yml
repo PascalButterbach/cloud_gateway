@@ -10,7 +10,15 @@ spring:
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/signIn, /token/validateToken, /token/refreshToken
+            - Path=/user/signIn, /user/register, /token/validateToken, /token/refreshToken
+
+        - id: USER-SERVICE-SECURED
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/update
+          filters:
+            - name: AuthFilter
+
         - id: IMAGE-SERVICE
           uri: lb://IMAGE-SERVICE
           predicates:
