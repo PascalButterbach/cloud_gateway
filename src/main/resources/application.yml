@@ -10,7 +10,7 @@ spring:
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/signIn, /user/signUp, /token/validateToken, /token/refreshToken, /token/revokeToken
+            - Path=/user/signIn, /user/signUp, /token/validateToken, /token/refreshToken, /token/revokeRefreshToken
 
         - id: USER-SERVICE-SECURED
           uri: lb://USER-SERVICE
