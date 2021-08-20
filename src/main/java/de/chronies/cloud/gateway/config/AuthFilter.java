@@ -50,7 +50,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             String[] parts = authHeader.split(" ");
 
-            if (parts.length != 2 || !"Bearer".equals(parts[0])) {
+            if (parts.length != 2 || !"Bearer".equalsIgnoreCase(parts[0])) {
                 return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
                         .message("Incorrect authentication structure")
                         .status(HttpStatus.BAD_REQUEST)
@@ -60,13 +60,14 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         .getJsonAsBytes());
             }
 
-            String body = "{\"token\":\"" + parts[1] + "\"}";
+            //String body = "{\"token\":\"" + parts[1] + "\"}";
 
             return webClientBuilder.build()
                     .post()
                     .uri("http://USER-SERVICE/token/validateToken")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(body))
+                    //.contentType(MediaType.APPLICATION_JSON)
+                    //.body(BodyInserters.fromValue(body))
+                    .header("Authorization", authHeader)
                     .exchangeToMono(clientResponse -> {
                         if (clientResponse.statusCode().isError()) {
                             return clientResponse.bodyToMono(AuthResponseDto.class);
@@ -90,7 +91,6 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                                     httpHeaders.set("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
                                     httpHeaders.set("x-auth-user-email", gatewayAuthResponseDto.getUser_email());
                                 });
-                                //.header("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
                         return chain.filter(exchange);
                     });
 
