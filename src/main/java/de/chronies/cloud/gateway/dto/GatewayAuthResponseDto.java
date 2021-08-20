@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class GatewayAuthResponseDto {
 
     private int user_id;
-
+    private String user_email;
 }

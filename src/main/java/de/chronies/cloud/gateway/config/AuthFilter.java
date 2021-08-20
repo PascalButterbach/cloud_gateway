@@ -86,7 +86,11 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         GatewayAuthResponseDto gatewayAuthResponseDto = (GatewayAuthResponseDto) dto;
                         exchange.getRequest()
                                 .mutate()
-                                .header("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
+                                .headers(httpHeaders -> {
+                                    httpHeaders.set("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
+                                    httpHeaders.set("x-auth-user-email", gatewayAuthResponseDto.getUser_email());
+                                });
+                                //.header("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
                         return chain.filter(exchange);
                     });
 
