@@ -20,6 +20,7 @@ public class ApiExceptionDto {
     private final Instant time;
     private final String path;
 
+    @JsonIgnore
     public ApiExceptionDto(String message, HttpStatus status, String path) {
         this.message = message;
         this.status = status;
