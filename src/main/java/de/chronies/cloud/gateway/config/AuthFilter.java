@@ -36,38 +36,27 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
 
+            final String path = exchange.getRequest().getPath().toString();
+
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
-                        .message("Missing authentication information")
-                        .status(HttpStatus.BAD_REQUEST)
-                        .time(Instant.now())
-                        .path(exchange.getRequest().getPath().toString())
-                        .build()
-                        .getJsonAsBytes());
+                ApiExceptionDto apiException = new ApiExceptionDto("Missing authentication information", HttpStatus.BAD_REQUEST, path);
+                return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
             }
 
-            String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+            String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
+            //todo intellij acting up (.split) : impossible to be null... refactor
             String[] parts = authHeader.split(" ");
 
             if (parts.length != 2 || !"Bearer".equalsIgnoreCase(parts[0])) {
-                return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
-                        .message("Incorrect authentication structure")
-                        .status(HttpStatus.BAD_REQUEST)
-                        .time(Instant.now())
-                        .path(exchange.getRequest().getPath().toString())
-                        .build()
-                        .getJsonAsBytes());
+                ApiExceptionDto apiException = new ApiExceptionDto("Incorrect authentication structure", HttpStatus.BAD_REQUEST, path);
+                return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
             }
-
-            //String body = "{\"token\":\"" + parts[1] + "\"}";
 
             return webClientBuilder.build()
                     .post()
                     .uri("http://USER-SERVICE/token/validateToken")
-                    //.contentType(MediaType.APPLICATION_JSON)
-                    //.body(BodyInserters.fromValue(body))
-                    .header("Authorization", authHeader)
+                    .header(HttpHeaders.AUTHORIZATION, authHeader)
                     .exchangeToMono(clientResponse -> {
                         if (clientResponse.statusCode().isError()) {
                             return clientResponse.bodyToMono(AuthResponseDto.class);
@@ -76,49 +65,30 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     }).flatMap(dto -> {
                         if (dto.getClass() != GatewayAuthResponseDto.class) {
                             AuthResponseDto authResponseDto = (AuthResponseDto) dto;
-                            return writeResponse(exchange.getResponse(), ApiExceptionDto.builder()
-                                    .message(authResponseDto.getMessage())
-                                    .status(authResponseDto.getStatus())
-                                    .time(Instant.now())
-                                    .path(authResponseDto.getPath())
-                                    .build()
-                                    .getJsonAsBytes());
+                            ApiExceptionDto apiException = new ApiExceptionDto(authResponseDto.getMessage(), authResponseDto.getStatus(), authResponseDto.getPath());
+
+                            return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
                         }
+
                         GatewayAuthResponseDto gatewayAuthResponseDto = (GatewayAuthResponseDto) dto;
                         exchange.getRequest()
                                 .mutate()
-                                .headers(httpHeaders -> {
-                                    httpHeaders.set("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
-                                    httpHeaders.set("x-auth-user-email", gatewayAuthResponseDto.getUser_email());
+                                .headers(headers -> {
+                                    headers.set("x-auth-user-id", String.valueOf(gatewayAuthResponseDto.getUser_id()));
+                                    headers.set("x-auth-user-email", gatewayAuthResponseDto.getUser_email());
                                 });
                         return chain.filter(exchange);
                     });
-
-
-/*
-            return webClientBuilder.build()
-                    .post()
-                    .uri("http://USER-SERVICE/user/validateToken?token=" + parts[1])
-                    .retrieve()
-                    .bodyToMono(UserDto.class)
-                    .map(userDto -> {
-                        exchange.getRequest()
-                                .mutate()
-                                .header("X-auth-user-id", String.valueOf(userDto.getId()));
-                        return exchange;
-                    }).flatMap(chain::filter);
-*/
-
         };
     }
 
     private Mono<Void> writeResponse(ServerHttpResponse response, byte[] bytes) {
         response.setStatusCode(HttpStatus.OK);
-        response.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 
-        response.getHeaders().add("Date", DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.US)
-                .withLocale(Locale.US)
-                .withZone(ZoneId.of("GMT"))
+        response.getHeaders().add(HttpHeaders.DATE, DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm:ss z", Locale.GERMANY)
+                .withLocale(Locale.GERMANY)
+                .withZone(ZoneId.of("CEST"))
                 .format(Instant.now()));
 
         DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
