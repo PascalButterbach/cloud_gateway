@@ -9,14 +9,13 @@ import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.Locale;
 
 @Getter
 public class ApiExceptionDto {
 
     private final String message;
     private final HttpStatus status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "EEE, dd MMM yyyy HH:mm:ss z", timezone = "Europe/Berlin", locale = "de_DE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "EEE, dd MMM yyyy HH:mm:ss z", timezone = "MESZ", locale = "de_DE")
     private final Instant time;
     private final String path;
 
