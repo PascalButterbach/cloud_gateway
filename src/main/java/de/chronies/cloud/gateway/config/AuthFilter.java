@@ -88,7 +88,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
         response.getHeaders().add(HttpHeaders.DATE, DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm:ss z", Locale.GERMANY)
                 .withLocale(Locale.GERMANY)
-                .withZone(ZoneId.of("CEST"))
+                .withZone(ZoneId.of("Europe/Berlin"))
                 .format(Instant.now()));
 
         DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
