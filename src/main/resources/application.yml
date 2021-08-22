@@ -15,7 +15,8 @@ spring:
         - id: USER-SERVICE-SECURED
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/update
+            - Path=/user/update, /user/{userId}
+            - Method=POST, DELETE
           filters:
             - name: AuthFilter
 
