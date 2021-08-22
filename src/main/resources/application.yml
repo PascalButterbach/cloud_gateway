@@ -15,10 +15,11 @@ spring:
         - id: USER-SERVICE-SECURED
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/update, /user/{userId}
+            - Path=/user/update, /user/*
             - Method=PUT, DELETE
           filters:
             - name: AuthFilter
+            - RewritePath=/user/(?<RID>.*), /user/$\{RID}
 
         - id: IMAGE-SERVICE
           uri: lb://IMAGE-SERVICE
