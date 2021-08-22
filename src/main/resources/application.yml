@@ -16,7 +16,7 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user/update, /user/{userId}
-            - Method=POST, DELETE
+            - Method=PUT, DELETE
           filters:
             - name: AuthFilter
 
