@@ -7,11 +7,19 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: USER-SERVICE-SWAGGER
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/swagger
+            - Method=GET
+
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user/, /user/signIn, /token/,  /token/validateToken,
             - Method=POST, PUT
+
+
         - id: USER-SERVICE-SECURED
           uri: lb://USER-SERVICE
           predicates:
@@ -20,6 +28,7 @@ spring:
           filters:
             - name: AuthFilter
             - RewritePath=/user/(?<RID>.*), /user/$\{RID}
+
 
         - id: IMAGE-SERVICE
           uri: lb://IMAGE-SERVICE
