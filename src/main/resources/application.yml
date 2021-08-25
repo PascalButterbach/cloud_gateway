@@ -6,12 +6,12 @@ spring:
     name: API-GATEWAY
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+#      globalcors:
+#        cors-configurations:
+#          '[/**]':
+#            allowedOrigins: "*"
+#            allowedMethods: "*"
+#            allowedHeaders: "*"
       routes:
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE

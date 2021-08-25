@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class WebClientConfig implements WebFluxConfigurer {
-/*
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -34,7 +34,7 @@ public class WebClientConfig implements WebFluxConfigurer {
         UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
         corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsWebFilter(corsConfigurationSource);
-    }*/
+    }
 
 
     @Bean
