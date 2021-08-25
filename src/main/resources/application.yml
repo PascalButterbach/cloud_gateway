@@ -6,6 +6,12 @@ spring:
     name: API-GATEWAY
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+        add-to-simple-url-handler-mapping: true
       routes:
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
