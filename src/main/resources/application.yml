@@ -11,6 +11,7 @@ spring:
           '[/**]':
             allowedOrigins: "*"
             allowedMethods: "*"
+            allowedHeaders: "*"
       routes:
         - id: USER-SERVICE-PUBLIC
           uri: lb://USER-SERVICE
