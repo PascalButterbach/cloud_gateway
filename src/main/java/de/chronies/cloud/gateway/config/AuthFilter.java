@@ -37,7 +37,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 ApiExceptionDto apiException = new ApiExceptionDto("Missing authentication information", HttpStatus.BAD_REQUEST, path);
-                return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
+                return writeResponse(exchange.getResponse(), apiException);
             }
 
             String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -47,7 +47,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             if (parts.length != 2 || !"Bearer".equalsIgnoreCase(parts[0])) {
                 ApiExceptionDto apiException = new ApiExceptionDto("Incorrect authentication structure", HttpStatus.BAD_REQUEST, path);
-                return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
+                return writeResponse(exchange.getResponse(), apiException);
             }
 
             return webClientBuilder.build()
@@ -64,7 +64,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                             AuthResponseDto authResponseDto = (AuthResponseDto) dto;
                             ApiExceptionDto apiException = new ApiExceptionDto(authResponseDto.getMessage(), authResponseDto.getStatus(), authResponseDto.getPath());
 
-                            return writeResponse(exchange.getResponse(), apiException.getJsonAsBytes());
+                            return writeResponse(exchange.getResponse(), apiException);
                         }
 
                         GatewayAuthResponseDto gatewayAuthResponseDto = (GatewayAuthResponseDto) dto;
@@ -79,8 +79,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
         };
     }
 
-    private Mono<Void> writeResponse(ServerHttpResponse response, byte[] bytes) {
-        response.setStatusCode(HttpStatus.OK);
+    private Mono<Void> writeResponse(ServerHttpResponse response, ApiExceptionDto apiExceptionDto) {
+        response.setStatusCode(apiExceptionDto.getStatus());
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 
         response.getHeaders().add(HttpHeaders.DATE, DateTimeFormatter.ofPattern("EEE dd MMM yyyy HH:mm:ss z", Locale.GERMANY)
@@ -88,7 +88,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                 .withZone(ZoneId.of("Europe/Berlin"))
                 .format(Instant.now()));
 
-        DataBuffer dataBuffer = response.bufferFactory().wrap(bytes);
+        DataBuffer dataBuffer = response.bufferFactory().wrap(apiExceptionDto.getJsonAsBytes());
 
         return response.writeWith(Flux.just(dataBuffer));
     }
