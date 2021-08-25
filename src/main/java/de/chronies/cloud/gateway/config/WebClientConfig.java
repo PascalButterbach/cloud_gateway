@@ -11,17 +11,17 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig implements WebFluxConfigurer {
+public class WebClientConfig {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowCredentials(true)
-                .allowedOrigins("*")
-                .allowedHeaders("*")
-                .allowedMethods("*")
-                .exposedHeaders("*");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowCredentials(true)
+//                .allowedOrigins("*")
+//                .allowedHeaders("*")
+//                .allowedMethods("*")
+//                .exposedHeaders("*");
+//    }
 
     @Bean
     public CorsWebFilter corsWebFilter() {
