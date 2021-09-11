@@ -18,6 +18,9 @@ target/
 *.iws
 *.iml
 *.ipr
+### INCLUDE PROJECT FILE TEMPLATES ###
+!.idea/fileTemplates/*
+
 
 ### NetBeans ###
 /nbproject/private/
